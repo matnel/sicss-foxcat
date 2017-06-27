@@ -1,4 +1,5 @@
 import mediacloud, json, datetime
+import calendar
 
 key = open('key.txt').read().strip()
 
@@ -9,30 +10,48 @@ mc = mediacloud.api.MediaCloud( key )
 collected = []
 
 keyword = "muslim OR islam"
-solr_filter = [ "language:en", "tags_id_media:8875027" ]
 
-all_count = mc.storyCount( keyword, solr_filter )['count']
+solr_core_filter = "tags_id_media:8875027"
 
-print all_count
+for year in range(2017,2018):
 
-data = mc.storyWordMatrix( keyword , solr_filter= solr_filter, rows= all_count )
+    for month in range(1,13):
 
-all_words = data['word_list']
+        last_day = calendar.monthrange( year, month )[1]
 
-for document_id, words in data['word_matrix'].items():
+        solr_filter_date = " AND publish_date:[{0}-{1}-01T00:00:00.000Z TO {0}-{1}-{2}T23:59:59.999Z]".format( year, month, last_day )
 
-    full_text = ''
-    for wid, wcount in words.items():
+        solr_filter = solr_core_filter + solr_filter_date
 
-        word = all_words[ int( wid ) ][0] + ' '
-        word = wcount * word
-        full_text += word
+        all_count = mc.storyCount( keyword, solr_filter )['count']
 
-    d = mc.story( document_id )
+        print year, month, all_count
 
-    d['full_text_bow'] = full_text
+        data = mc.storyWordMatrix( keyword , solr_filter= solr_filter, rows= all_count )
 
-    collected.append( d )
+        json.dump( data , open('wordmatrix_' + year + '_' + month + '.json', 'w' ) )
 
+        # all_words = data['word_list']
 
-print json.dump( collected, open('collected.json', 'w') )
+        data = mc.storyList(  keyword , solr_filter= solr_filter, rows= all_count )
+
+        json.dump( data, open('data_' + year + '_' + month + '.json', 'w' ) )
+
+        ## this method is too API heavy
+
+        #for document_id, words in data['word_matrix'].items():
+
+        #    full_text = ''
+        #    for wid, wcount in words.items():
+
+        #        word = all_words[ int( wid ) ][0] + ' '
+        #        word = wcount * word
+        #        full_text += word
+
+            #d = mc.story( document_id )
+
+            #d['full_text_bow'] = full_text
+
+            #collected.append( d )
+
+#print json.dump( collected, open('collected.json', 'w') )
