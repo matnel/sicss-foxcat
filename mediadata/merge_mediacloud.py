@@ -26,7 +26,10 @@ for f in files:
             word = wcount * word
             full_text += word
 
-        data[ int( stories_id ) ]['full_text_bow'] = full_text
+        try:
+            data[ int( stories_id ) ]['full_text_bow'] = full_text
+        except:
+            print 'Can not find document', stories_id, 'in', f
 
     megadata += data.values()
 
