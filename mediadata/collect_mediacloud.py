@@ -13,7 +13,7 @@ keyword = "muslim OR islam"
 
 solr_core_filter = "tags_id_media:8875027"
 
-for year in range(2017,2018):
+for year in range(2005,2018):
 
     for month in range(1,13):
 
@@ -29,13 +29,13 @@ for year in range(2017,2018):
 
         data = mc.storyWordMatrix( keyword , solr_filter= solr_filter, rows= all_count )
 
-        json.dump( data , open('wordmatrix_' + year + '_' + month + '.json', 'w' ) )
+        json.dump( data , open( 'wordmatrix_{0}_{1}.json'.format( year, month ), 'w' ) )
 
         # all_words = data['word_list']
 
         data = mc.storyList(  keyword , solr_filter= solr_filter, rows= all_count )
 
-        json.dump( data, open('data_' + year + '_' + month + '.json', 'w' ) )
+        json.dump( data, open( 'metadata_{0}_{1}.json'.format( year, month ), 'w' ) )
 
         ## this method is too API heavy
 
