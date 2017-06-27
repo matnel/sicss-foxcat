@@ -27,31 +27,14 @@ for year in range(2005,2018):
 
         print year, month, all_count
 
+        ## bag of words
+
         data = mc.storyWordMatrix( keyword , solr_filter= solr_filter, rows= all_count )
 
         json.dump( data , open( 'wordmatrix_{0}_{1}.json'.format( year, month ), 'w' ) )
 
-        # all_words = data['word_list']
+        ## metadata
 
         data = mc.storyList(  keyword , solr_filter= solr_filter, rows= all_count )
 
         json.dump( data, open( 'metadata_{0}_{1}.json'.format( year, month ), 'w' ) )
-
-        ## this method is too API heavy
-
-        #for document_id, words in data['word_matrix'].items():
-
-        #    full_text = ''
-        #    for wid, wcount in words.items():
-
-        #        word = all_words[ int( wid ) ][0] + ' '
-        #        word = wcount * word
-        #        full_text += word
-
-            #d = mc.story( document_id )
-
-            #d['full_text_bow'] = full_text
-
-            #collected.append( d )
-
-#print json.dump( collected, open('collected.json', 'w') )
