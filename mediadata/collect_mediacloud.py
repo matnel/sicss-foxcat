@@ -2,16 +2,20 @@ import mediacloud, json, datetime
 
 key = open('key.txt').read().strip()
 
+print key
+
 mc = mediacloud.api.MediaCloud( key )
 
 collected = []
 
 keyword = "muslim OR islam"
-solr_filter = [ "language:en" ]
+solr_filter = [ "language:en", "tags_id_media:8875027" ]
 
 all_count = mc.storyCount( keyword, solr_filter )['count']
 
-data = mc.storyWordMatrix( keyword , solr_filter= solr_filter, rows= 100 )
+print all_count
+
+data = mc.storyWordMatrix( keyword , solr_filter= solr_filter, rows= all_count )
 
 all_words = data['word_list']
 
